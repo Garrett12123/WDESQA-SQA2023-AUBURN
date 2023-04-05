@@ -1,7 +1,7 @@
 '''
 Akond Rahman 
 April 30, 2021 
-Placeholder for constants for KubeTaint HookTest
+Placeholder for constants for KubeTaint Hook
 '''
 
 FILE_READ_FLAG               = 'r'
