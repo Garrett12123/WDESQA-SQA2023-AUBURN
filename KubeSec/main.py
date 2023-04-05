@@ -1,6 +1,6 @@
 '''
 Akond Rahman 
-Sep 21, 2022 --Here is the test for hook
+Sep 21, 2022 -- Testing Py Hook
 Source Code to Run Tool on All Kubernetes Manifests  
 '''
 import scanner 
