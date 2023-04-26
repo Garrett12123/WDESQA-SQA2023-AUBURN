@@ -171,7 +171,8 @@ def scanForOverPrivileges(script_path):
                         # print( key_lis_holder )
                         if(constants.CONTAINER_KW in key_lis_holder) and (constants.SECU_CONT_KW in key_lis_holder) and (constants.PRIVI_KW in key_lis_holder):
                             key_count += 1
-                            privi_dict_return[key_count] = value_, key_lis_holder 
+                            privi_dict_return[key_count] = value_, key_lis_holder
+    logging.info('Found %d over privileges', key_count) 
     return privi_dict_return 
 
 def getItemFromSecret( dict_sec, pos ): 
@@ -636,6 +637,7 @@ def scanForCAPSYS(path_script ):
     return dic  
 
 def scanForCAPMODULE(path_script ):
+    logging.info('Scanning for CAPMODULE')
     dic, lis   = {}, []
     if ( parser.checkIfValidK8SYaml( path_script )  ): 
         cnt = 0 
@@ -650,10 +652,10 @@ def scanForCAPMODULE(path_script ):
         key_list = [ x_[0] for x_ in temp_ls  ]
         if ( all( z_ in key_list for z_ in constants.CAPSYS_KW_LIST )  ) :
             relevant_values = parser.getValuesRecursively(yaml_di)
-            logging.info("scanning for CAPMODULE")
             if (constants.CAPSYS_MODULE_STRING in relevant_values) :
                 cnt += 1 
                 dic[ cnt ] = []
+    logging.info('%d CAPMODULE', len(dic))
     return dic      
 
 def scanForHostAliases(path_script ):
@@ -677,12 +679,13 @@ def scanForHostAliases(path_script ):
                 relevant_values = [] 
                 parser.getValsFromKey(yaml_di, constants.HOST_ALIAS_KW, relevant_values)
                 dic[ cnt ] = relevant_values
+    logging.info('%d Host Aliases', len(dic))
     return dic  
 
 
 def scanAllowPrivileges(path_script ):
 
-    logging.info("scanning for allow privileges")
+    logging.info('Scanning for allow privileges')
 
     dic, lis   = {}, []
     if ( parser.checkIfValidK8SYaml( path_script )  ): 
@@ -705,10 +708,14 @@ def scanAllowPrivileges(path_script ):
                 relevant_values = [x_.lower() for x_ in relevant_values]
                 if constants.TRUE_LOWER_KW in relevant_values:
                     dic[cnt] = [] 
+    logging.info('%d Allow Privileges', len(dic))
     return dic  
 
 
 def scanForUnconfinedSeccomp(path_script ):
+
+    logging.info('Scanning for unconfined Seccomp')
+
     dic, lis   = {}, []
     if ( parser.checkIfValidK8SYaml( path_script )  ): 
         cnt = 0 
@@ -724,14 +731,12 @@ def scanForUnconfinedSeccomp(path_script ):
         # print(key_list)
         if ( all( var in key_list for var in constants.SECCOMP_KW_LIST ) ) :
                 cnt += 1 
-                relevant_values = []
-
-                logging.info("Scanning for unconfined seccomp") 
-
+                relevant_values = [] 
                 parser.getValsFromKey(yaml_di, constants.TYPE_KW, relevant_values)
                 # print( relevant_values )
                 if constants.UNCONFIED_KW in relevant_values:
                     dic[cnt] = [] 
+    logging.info('%d Unconfined Seccomp', len(dic))
     return dic  
 
 if __name__ == '__main__':

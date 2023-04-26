@@ -1,0 +1,10 @@
+2023-04-26 10:39:28,084 Scanning for host aliases
+2023-04-26 10:39:28,117 1 Host Aliases
+2023-04-26 10:39:28,117 Scanning for allow privileges
+2023-04-26 10:39:28,122 1 Allow Privileges
+2023-04-26 10:39:28,122 Scanning for unconfined Seccomp
+2023-04-26 10:39:28,129 0 Unconfined Seccomp
+2023-04-26 10:39:28,129 Scanning for over privileges
+2023-04-26 10:39:28,156 Found 1 over privileges
+2023-04-26 10:39:28,156 Scanning for CAPMODULE
+2023-04-26 10:39:28,209 1 CAPMODULE
