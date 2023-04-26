@@ -10,6 +10,11 @@ import os
 import pandas as pd 
 import numpy as np 
 
+import logging
+
+
+logging.basicConfig(format= '%(asctime)s %(message)s', filename='Project.log', level=logging.INFO)
+
 def getYAMLFiles(path_to_dir):
     valid_  = [] 
     for root_, dirs, files_ in os.walk( path_to_dir ):
@@ -20,7 +25,7 @@ def getYAMLFiles(path_to_dir):
                valid_.append(full_p_file)
     return valid_ 
 
-def isValidUserName(uName): 
+def isValidUserName(uName):
     valid = True
     if (isinstance( uName , str)  ): 
         if( any(z_ in uName for z_ in constants.FORBIDDEN_USER_NAMES )   ): 
@@ -133,6 +138,8 @@ def scanForSecrets(yaml_d):
 
 
 def scanForOverPrivileges(script_path):
+
+    logging.info('Scanning for over privileges')
     key_count , privi_dict_return = 0, {} 
     kind_values = [] 
     checkVal = parser.checkIfValidK8SYaml( script_path )
@@ -643,12 +650,16 @@ def scanForCAPMODULE(path_script ):
         key_list = [ x_[0] for x_ in temp_ls  ]
         if ( all( z_ in key_list for z_ in constants.CAPSYS_KW_LIST )  ) :
             relevant_values = parser.getValuesRecursively(yaml_di)
+            logging.info("scanning for CAPMODULE")
             if (constants.CAPSYS_MODULE_STRING in relevant_values) :
                 cnt += 1 
                 dic[ cnt ] = []
     return dic      
 
 def scanForHostAliases(path_script ):
+
+    logging.info('Scanning for host aliases')
+
     dic, lis   = {}, []
     if ( parser.checkIfValidK8SYaml( path_script )  ): 
         cnt = 0 
@@ -670,6 +681,9 @@ def scanForHostAliases(path_script ):
 
 
 def scanAllowPrivileges(path_script ):
+
+    logging.info("scanning for allow privileges")
+
     dic, lis   = {}, []
     if ( parser.checkIfValidK8SYaml( path_script )  ): 
         cnt = 0 
@@ -710,7 +724,10 @@ def scanForUnconfinedSeccomp(path_script ):
         # print(key_list)
         if ( all( var in key_list for var in constants.SECCOMP_KW_LIST ) ) :
                 cnt += 1 
-                relevant_values = [] 
+                relevant_values = []
+
+                logging.info("Scanning for unconfined seccomp") 
+
                 parser.getValsFromKey(yaml_di, constants.TYPE_KW, relevant_values)
                 # print( relevant_values )
                 if constants.UNCONFIED_KW in relevant_values:
@@ -736,20 +753,20 @@ if __name__ == '__main__':
     # tp_docker_sock   = '/Users/arahman/K8S_REPOS/GITLAB_REPOS/kubernetes-gitlab-demo/gitlab-runner/gitlab-runner-docker-deployment.yml' 
     # a_dict           = scanDockerSock( tp_docker_sock )
 
-    # cap_sys_yaml = 'TEST_ARTIFACTS/cap.sys.yaml'
-    # a_dict       = scanForHostAliases( cap_sys_yaml )
+    cap_sys_yaml = 'TEST_ARTIFACTS/cap.sys.yaml'
+    a_dict       = scanForHostAliases( cap_sys_yaml )
     
-    # allow_privi_yaml = 'TEST_ARTIFACTS/allow.privilege.yaml'
-    # a_dict           = scanAllowPrivileges( allow_privi_yaml  )
+    allow_privi_yaml = 'TEST_ARTIFACTS/allow.privilege.yaml'
+    a_dict           = scanAllowPrivileges( allow_privi_yaml  )
 
     # missing_net_yaml = '/Users/arahman/K8S_REPOS/GITLAB_REPOS/advanced-kubernetes-workshop/lb/nginx-dep.yaml'
     # a_dict           = scanForMissingNetworkPolicy( missing_net_yaml )
 
-    # seccomp_unconfined_yaml = 'TEST_ARTIFACTS/fp.seccomp.unconfined.yaml'
-    # a_dict                  = scanForUnconfinedSeccomp( seccomp_unconfined_yaml )
+    seccomp_unconfined_yaml = 'TEST_ARTIFACTS/fp.seccomp.unconfined.yaml'
+    a_dict                  = scanForUnconfinedSeccomp( seccomp_unconfined_yaml )
 
-    # over_privilege  = 'TEST_ARTIFACTS/multi.doc.yaml'
-    # scanForOverPrivileges( over_privilege )
+    over_privilege  = 'TEST_ARTIFACTS/multi.doc.yaml'
+    scanForOverPrivileges( over_privilege )
 
     # no_http_file        = 'TEST_ARTIFACTS/fp.http.yaml'
     # sh_files_configmaps = scanForHTTP( no_http_file )
@@ -760,7 +777,7 @@ if __name__ == '__main__':
     # no_reso_yaml = '/Users/arahman/K8S_REPOS/GITHUB_REPOS/istio-handson/deployment/articles.yaml'
     # no_reso_dict = scanForHTTP(no_reso_yaml)
 
-    # cap_sys_module_yaml = 'TEST_ARTIFACTS/cap-module-ostk.yaml'
-    # cap_sys_module_dic  = scanForCAPMODULE ( cap_sys_module_yaml )   
+    cap_sys_module_yaml = 'TEST_ARTIFACTS/cap-module-ostk.yaml'
+    cap_sys_module_dic  = scanForCAPMODULE ( cap_sys_module_yaml )   
 
     print(cap_sys_module_dic)  
